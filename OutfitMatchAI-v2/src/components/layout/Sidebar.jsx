@@ -1,4 +1,7 @@
 import { NavLink } from "react-router-dom";
+
+import aiStylist from "../../assets/ai-stylist.png";
+
 import {
   LayoutDashboard,
   Shirt,
@@ -41,19 +44,41 @@ export default function Sidebar() {
 
       <div className="p-6 border-b border-slate-700">
 
-        <h1 className="text-2xl font-bold">
+      <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 rounded-3xl p-6 shadow-2xl">
 
-          OutfitMatch AI
+  <img
+    src={aiStylist}
+    alt="AI Stylist"
+    className="w-full rounded-3xl shadow-2xl"
+/>
 
-        </h1>
+    <h1 className="text-2xl font-bold text-center mt-2">
 
-        <p className="text-slate-400 text-sm mt-2">
+        OutfitMatch AI
 
-          AI Personal Stylist
+    </h1>
 
-        </p>
+    <p className="text-center text-indigo-100 text-sm mt-1">
 
-      </div>
+        Personal AI Stylist
+
+    </p>
+
+    <div className="flex justify-center items-center gap-2 mt-5">
+
+        <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse"/>
+
+        <span className="text-sm">
+
+            Online
+
+        </span>
+
+    </div>
+
+</div>
+
+</div>
 
       <nav className="flex-1 p-4 space-y-2">
 
@@ -67,14 +92,14 @@ export default function Sidebar() {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl transition
+    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
 
-                ${
-                  isActive
-                    ? "bg-indigo-600"
-                    : "hover:bg-slate-800"
-                }`
-              }
+    ${
+        isActive
+            ? "bg-indigo-600 shadow-lg scale-[1.02]"
+            : "hover:bg-slate-800 hover:translate-x-1"
+    }`
+}
             >
 
               <Icon size={20} />
@@ -89,7 +114,21 @@ export default function Sidebar() {
 
       <div className="p-4 border-t border-slate-700 text-xs text-slate-500">
 
-        Akademia Górnośląska
+        <div className="text-center">
+
+    <p className="font-semibold">
+
+        OutfitMatch AI
+
+    </p>
+
+    <p className="mt-1">
+
+        Powered by Gemini 2.5 Flash
+
+    </p>
+
+</div>
 
       </div>
 

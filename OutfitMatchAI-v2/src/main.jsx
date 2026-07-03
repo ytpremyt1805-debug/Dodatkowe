@@ -8,6 +8,7 @@ import "./index.css";
 import App from "./App";
 
 import WardrobeProvider from "./contexts/WardrobeContext";
+import UserProvider from "./contexts/UserContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 
@@ -15,11 +16,15 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
         <BrowserRouter>
 
-            <WardrobeProvider>
+            <UserProvider>
 
-                <App />
+                <WardrobeProvider>
 
-            </WardrobeProvider>
+                    <App />
+
+                </WardrobeProvider>
+
+            </UserProvider>
 
         </BrowserRouter>
 

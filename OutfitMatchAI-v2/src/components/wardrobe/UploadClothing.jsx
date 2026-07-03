@@ -9,18 +9,13 @@ export default function UploadClothing() {
     const { addClothing } = useWardrobe();
 
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState("");
 
-    const [preview, setPreview] = useState(null);
+    const handleFiles = async (e) => {
 
-    const [analysis, setAnalysis] = useState(null);
+        const files = Array.from(e.target.files);
 
-    const handleFile = async (e) => {
-
-        const file = e.target.files[0];
-
-        if (!file) return;
-
-        setPreview(URL.createObjectURL(file));
+        if (!files.length) return;
 
         setLoading(true);
 
@@ -28,42 +23,64 @@ export default function UploadClothing() {
 
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-            const result = await analyzeClothing(file, apiKey);
-            result.category = result.category?.toLowerCase().trim();
+            for (let i = 0; i < files.length; i++) {
 
-            setAnalysis(result);
+                const file = files[i];
+
+                setProgress(`Analizuję ${i + 1} z ${files.length} zdjęć...`);
+
+                const result = await analyzeClothing(file, apiKey);
+
+                result.category = result.category?.toLowerCase().trim();
+
+                addClothing({
+
+                    id: crypto.randomUUID(),
+
+                    image: await fileToBase64(file),
+
+                    description: result,
+                    
+                    favorite: false,
+
+
+                    createdAt: new Date()
+
+                });
+
+            }
+
+            alert(`✅ Dodano ${files.length} elementów do garderoby.`);
 
         } catch (err) {
 
-            alert("Błąd analizy zdjęcia.");
-
             console.error(err);
+
+            alert("Wystąpił błąd podczas analizy zdjęć.");
 
         }
 
         setLoading(false);
+        setProgress("");
+
+        e.target.value = "";
 
     };
 
-    const saveClothing = () => {
 
-        addClothing({
+function fileToBase64(file) {
 
-            id: Date.now(),
+    return new Promise((resolve) => {
 
-            image: preview,
+        const reader = new FileReader();
 
-            description: analysis,
+        reader.onload = () => resolve(reader.result);
 
-            createdAt: new Date()
+        reader.readAsDataURL(file);
 
-        });
+    });
 
-        setPreview(null);
-
-        setAnalysis(null);
-
-    };
+}
 
     return (
 
@@ -71,7 +88,7 @@ export default function UploadClothing() {
 
             <h2 className="text-xl font-bold mb-4">
 
-                Dodaj nowe ubranie
+                Dodaj nowe ubrania
 
             </h2>
 
@@ -83,21 +100,18 @@ export default function UploadClothing() {
 
             >
 
-                📷 Wybierz zdjęcie
+                📷 Wybierz zdjęcia
 
             </button>
 
             <input
 
                 hidden
-
                 ref={fileRef}
-
                 type="file"
-
                 accept="image/*"
-
-                onChange={handleFile}
+                multiple
+                onChange={handleFiles}
 
             />
 
@@ -105,59 +119,17 @@ export default function UploadClothing() {
 
                 <div className="mt-6">
 
-                    🤖 Analizuję zdjęcie...
+                    <div className="font-semibold">
 
-                </div>
+                        🤖 {progress}
 
-            )}
+                    </div>
 
-            {preview && (
+                    <div className="mt-3 w-full bg-gray-200 rounded-full h-3">
 
-                <img
+                        <div className="bg-indigo-600 h-3 rounded-full animate-pulse w-full"></div>
 
-                    src={preview}
-
-                    className="mt-6 rounded-lg w-64"
-
-                />
-
-            )}
-
-            {analysis && (
-
-                <div className="mt-6 border rounded-lg p-4">
-
-                    <h3 className="font-bold mb-2">
-
-                        Wynik analizy
-
-                    </h3>
-
-                    <p><b>Typ:</b> {analysis.type}</p>
-
-                    <p><b>Kolor:</b> {analysis.color}</p>
-
-                    <p><b>Styl:</b> {analysis.style}</p>
-
-                    <p><b>Materiał:</b> {analysis.material}</p>
-
-                    <p><b>Sezon:</b> {analysis.season}</p>
-
-                    <p><b>Okazja:</b> {analysis.occasion}</p>
-
-                    <p><b>Elegancja:</b> {analysis.elegance}/10</p>
-
-                    <button
-
-                        onClick={saveClothing}
-
-                        className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg"
-
-                    >
-
-                        ✅ Zapisz do garderoby
-
-                    </button>
+                    </div>
 
                 </div>
 

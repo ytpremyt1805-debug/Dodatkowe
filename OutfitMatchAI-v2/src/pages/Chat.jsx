@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import useWardrobe from "../hooks/useWardrobe";
+import useUser from "../hooks/useUser";
 
 export default function Chat() {
 
     const { wardrobe } = useWardrobe();
+    const { user } = useUser();
 
     const [question, setQuestion] = useState("");
 
@@ -14,7 +16,9 @@ export default function Chat() {
 
     async function askAI() {
 
+       
         if (!question.trim()) return;
+
 
         setLoading(true);
 
@@ -41,15 +45,41 @@ export default function Chat() {
             const prompt = `
 Jesteś profesjonalną stylistką AI.
 
+Twoim zadaniem jest dobieranie stylizacji dopasowanych do:
+
+- sylwetki użytkownika,
+- wzrostu,
+- rozmiaru ubrań,
+- okazji,
+- pory roku,
+- elegancji ubrań.
+
+Nigdy nie proponuj ubrań spoza garderoby.
+
+Jeżeli czegoś brakuje, wypisz to wyłącznie w sekcji "Brakujące elementy".
+
+Jeżeli kilka ubrań do siebie nie pasuje kolorystycznie lub stylistycznie, wybierz najlepsze możliwe połączenie.
+
+Zwracaj uwagę na proporcje sylwetki użytkownika podczas doboru stroju.
+
+Jeżeli użytkownik posiada akcesoria lub odpowiednie buty, wykorzystaj je w stylizacji.
+
+Twórz profesjonalne porady stylistyczne, jak osobisty stylista.
+
 Masz dostęp do garderoby użytkownika.
 
 Garderoba:
 
 ${JSON.stringify(wardrobeDescription, null, 2)}
 
+Profil użytkownika:
+
+${JSON.stringify(user, null, 2)}
+
 Pytanie użytkownika:
 
 "${question}"
+
 
 Odpowiadaj wyłącznie na podstawie garderoby.
 

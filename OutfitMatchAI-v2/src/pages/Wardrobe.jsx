@@ -2,111 +2,106 @@ import useWardrobe from "../hooks/useWardrobe";
 import UploadClothing from "../components/wardrobe/UploadClothing";
 import ClothingCard from "../components/wardrobe/ClothingCard";
 import { useMemo, useState } from "react";
+import { categories } from "../utils/categories";
 
 export default function Wardrobe() {
 
     const { wardrobe } = useWardrobe();
 
-    const [filter, setFilter] = useState("Wszystkie");
+    const [filter, setFilter] = useState("wszystkie");
     const [search, setSearch] = useState("");
-const categories = [
-    "Wszystkie",
-    "Koszula",
-    "Spodnie",
-    "Buty",
-    "Marynarka",
-    "Sukienka",
-    "Kurtka",
-    "Bluza",
-    "T-shirt"
-];
 
-const filteredWardrobe = useMemo(() => {
+    const filters = [
+        { key: "wszystkie", label: "Wszystkie", icon: "👔" },
+        ...categories
+    ];
 
-    return wardrobe.filter(item => {
+    const filteredWardrobe = useMemo(() => {
 
-       const categoryOk =
-    filter === "Wszystkie" ||
-    item.description.category === filter.toLowerCase();
+        return wardrobe.filter(item => {
 
-        const text = `
-            ${item.description.type}
-            ${item.description.color}
-            ${item.description.style}
-            ${item.description.material}
-            ${item.description.season}
-            ${item.description.occasion}
-        `.toLowerCase();
+            const categoryOk =
+                filter === "wszystkie" ||
+                item.description.category === filter;
 
-        const searchOk =
-            text.includes(search.toLowerCase());
+            const text = `
+                ${item.description.type}
+                ${item.description.color}
+                ${item.description.style}
+                ${item.description.material}
+                ${item.description.season}
+                ${item.description.occasion}
+            `.toLowerCase();
 
-        return categoryOk && searchOk;
+            const searchOk =
+                text.includes(search.toLowerCase());
 
-    });
+            return categoryOk && searchOk;
 
-}, [wardrobe, filter, search]);
+        });
+
+    }, [wardrobe, filter, search]);
+
     return (
 
         <div className="space-y-8">
 
             <div>
 
-    <h1 className="text-4xl font-bold">
+                <h1 className="text-4xl font-bold">
 
-        Moja garderoba
+                    Moja garderoba
 
-    </h1>
+                </h1>
 
-    <p className="text-gray-500 mt-2">
+                <p className="text-gray-500 mt-2">
 
-        Dodawaj ubrania i buduj swoją cyfrową szafę.
+                    Dodawaj ubrania i buduj swoją cyfrową szafę.
 
-    </p>
+                </p>
 
-    <p className="text-sm text-indigo-600 mt-2">
+                <p className="text-sm text-indigo-600 mt-2">
 
-        Masz obecnie <b>{filteredWardrobe.length}</b> ubrań.
+                    Masz obecnie <b>{filteredWardrobe.length}</b> ubrań.
 
-    </p>
+                </p>
 
-</div>
-<input
-    type="text"
-    placeholder="🔍 Szukaj ubrań..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    className="w-full mb-4 px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-/>
-<div className="flex flex-wrap gap-3">
+            </div>
 
-    {categories.map(category => (
+            <input
+                type="text"
+                placeholder="🔍 Szukaj ubrań..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
 
-        <button
+            <div className="flex flex-wrap gap-3">
 
-            key={category}
+                {filters.map(category => (
 
-            onClick={() => setFilter(category)}
+                    <button
 
-            className={`px-4 py-2 rounded-full transition
+                        key={category.key}
 
-            ${filter === category
+                        onClick={() => setFilter(category.key)}
 
-                ? "bg-indigo-600 text-white"
+                        className={`px-4 py-2 rounded-full transition ${
+                            filter === category.key
+                                ? "bg-indigo-600 text-white"
+                                : "bg-white border hover:bg-gray-100"
+                        }`}
 
-                : "bg-white border hover:bg-gray-100"
+                    >
 
-            }`}
+                        {category.icon} {category.label}
 
-        >
+                    </button>
 
-            {category}
+                ))}
 
-        </button>
+            </div>
 
-    ))}
-
-</div>
             <UploadClothing />
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

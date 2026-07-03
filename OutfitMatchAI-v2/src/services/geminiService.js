@@ -30,17 +30,16 @@ Zwróć WYŁĄCZNIE poprawny JSON.
 
 Pole "category" może przyjmować WYŁĄCZNIE jedną z wartości:
 
-koszula
+koszule
+bluzki
+swetry
+marynarki
+okrycia
 spodnie
+jeansy
+spódnice
+sukienki
 buty
-marynarka
-kurtka
-bluza
-t-shirt
-sweter
-sukienka
-spódnica
-garnitur
 akcesoria
 
 Pole "type" ma być pełnym opisem ubrania.
@@ -54,8 +53,25 @@ category: "buty"
 type: "Brązowe półbuty"
 
 category: "koszula"
-type: "Koszula męska slim fit"
+type: "Koszula slim fit"
     
+Klasyfikacja:
+
+- Koszule eleganckie i casual → koszule
+- Bluzka damska → bluzki
+- Kardigan i sweter → swetry
+- Marynarka i żakiet → marynarki
+- Płaszcz, kurtka, trencz, parka, kamizelka → okrycia
+- Chinosy, spodnie materiałowe, garniturowe → spodnie
+- Jeansy → jeansy
+- Spódnice → spódnice
+- Sukienki → sukienki
+- Wszystkie rodzaje obuwia → buty
+- Pasek, krawat, muszka, czapka, szalik, rękawiczki, torebka, plecak, biżuteria, okulary → akcesoria
+
+Pole "category" MUSI zawierać dokładnie jedną z podanych wartości.
+Nie wolno tworzyć własnych kategorii ani używać innych nazw.
+
 {
 "category":"",
 "type":"",
@@ -87,11 +103,13 @@ type: "Koszula męska slim fit"
 
     ]);
 
-    return JSON.parse(
+    const data = JSON.parse(
+    result.response.text()
+);
 
-        result.response.text()
+data.category = normalizeCategory(data.type);
 
-    );
+return data;
 
 }
 
@@ -114,5 +132,99 @@ function fileToBase64(file){
         reader.readAsDataURL(file);
 
     });
+
+}
+function normalizeCategory(type) {
+
+    const t = type.toLowerCase();
+
+    if (t.includes("koszula"))
+        return "koszule";
+
+    if (
+        t.includes("t-shirt") ||
+        t.includes("tshirt") ||
+        t.includes("koszulka") ||
+        t.includes("bluzka") ||
+        t.includes("top")
+    )
+        return "bluzki";
+
+    if (
+        t.includes("sweter") ||
+        t.includes("kardigan")||
+        t.includes("golf")
+    )
+        return "swetry";
+
+    if (
+        t.includes("marynarka") ||
+        t.includes("żakiet")
+        
+    )
+        return "marynarki";
+
+    if (
+        t.includes("kurtka") ||
+        t.includes("płaszcz") ||
+        t.includes("trencz")||
+        t.includes("parka")
+
+    )
+        return "okrycia";
+
+    if (t.includes("jeans"))
+        return "jeansy";
+
+    if (
+        t.includes("spodnie") ||
+        t.includes("chinos") ||
+        t.includes("bojówki")
+    )
+        return "spodnie";
+
+    if (t.includes("spódnica"))
+        return "spódnice";
+
+    if (t.includes("sukienka"))
+        return "sukienki";
+
+    if (
+            t.includes("but") ||
+    t.includes("sneaker") ||
+    t.includes("tramp") ||
+    t.includes("adidas") ||
+    t.includes("nike") ||
+    t.includes("balet") ||
+    t.includes("sanda") ||
+    t.includes("szpil") ||
+    t.includes("czół") ||
+    t.includes("mule") ||
+    t.includes("klapk") ||
+    t.includes("mokas") ||
+    t.includes("loafer") ||
+    t.includes("kozak") ||
+    t.includes("botek")
+    )
+        return "buty";
+
+    if (
+        t.includes("torebka") ||
+        t.includes("torba") ||
+        t.includes("plecak") ||
+        t.includes("zegarek") ||
+        t.includes("okulary") ||
+        t.includes("pasek") ||
+        t.includes("czapka") ||
+        t.includes("kapelusz")||
+        t.includes("kolczy")||
+        t.includes("naszyj")||
+        t.includes("branso")||
+        t.includes("pierś")||
+        t.includes("biżuter")
+    )
+        return "akcesoria";
+
+    return "inne";
 
 }

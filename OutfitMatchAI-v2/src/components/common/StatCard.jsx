@@ -12,23 +12,23 @@ export default function StatCard({
 
     return (
 
-        <div className="bg-white rounded-2xl shadow-sm border p-6">
+        <div className="bg-white rounded-xl shadow-sm border p-3 min-h-[110px] hover:shadow-md transition">
 
-            <div className="text-4xl">
+            <div className="text-lg">
 
                 {icon}
 
             </div>
 
             <div
-                className={`text-4xl font-bold mt-4 ${color}`}
+                className={`text-2xl font-bold mt-2 ${color}`}
             >
 
                 {value}
 
             </div>
 
-            <div className="text-gray-500 mt-2">
+            <div className="text-sm text-gray-500 mt-1">
 
                 {title}
 
